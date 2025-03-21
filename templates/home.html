@@ -1,55 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <script type="module" src="{{ url_for('static', path='/firebase-login.js') }}"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        .container {
-            max-width: 300px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        input {
-            width: 90%;
-            padding: 8px;
-            margin: 10px 0;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: blue;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: darkblue;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="login-box">
-        <label>Email:</label>
-        <input type="email" id="email"><br/>
-        <label>Password:</label>
-        <input type="password" id="password"><br/>
-        <button id="login">Login</button>
-        <button id="sign-up">Sign Up</button>
-      </div>
-
+{% extends "parent.html" %}
+{% block content %}
+<div class="container py-5">
    
-
-</body>
-</html>
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-3">Welcome to F1<span style="color: var(--secondary-color);">StatsHub</span></h1>
+            <p class="lead mb-4">The ultimate resource for Formula 1 statistics, driver profiles, and team comparisons.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/drivers" class="btn btn-secondary-custom px-4 py-2">
+                    <i class="fas fa-user-alt me-2"></i> Explore Drivers
+                </a>
+                <a href="/teams" class="btn btn-outline-accent px-4 py-2">
+                    <i class="fas fa-users me-2"></i> Explore Teams
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="fw-bold">Explore Our Features</h2>
+            <p class="text-muted">Everything you need to analyze Formula 1 data</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="mt-4 mb-3">Comprehensive Database</h4>
+                    <p class="text-muted">Access detailed information about drivers, teams, seasons, and races.</p>
+                    <a href="/drivers" class="btn btn-sm btn-outline-accent mt-3">
+                        Browse Data <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4 class="mt-4 mb-3">Statistical Analysis</h4>
+                    <p class="text-muted">Compare performances and analyze trends with our interactive tools.</p>
+                    <a href="/compare_drivers" class="btn btn-sm btn-outline-accent mt-3">
+                        Compare Stats <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h4 class="mt-4 mb-3">Contribute Data</h4>
+                    <p class="text-muted">Sign in to add new information or update existing records.</p>
+                    <button onclick="openAuthModal()" class="btn btn-sm btn-outline-accent mt-3">
+                        Sign In <i class="fas fa-sign-in-alt ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i> Quick Access</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <div class="card card-secondary h-100">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-user-alt me-2"></i> Driver Resources</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Access and manage driver information with these quick links:</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="/drivers" class="btn btn-outline-accent">
+                                            <i class="fas fa-list me-2"></i> All Drivers
+                                        </a>
+                                        <a href="/drivers/create" class="btn btn-outline-accent">
+                                            <i class="fas fa-plus me-2"></i> Add New Driver
+                                        </a>
+                                        <a href="/compare_drivers" class="btn btn-outline-accent">
+                                            <i class="fas fa-balance-scale me-2"></i> Compare Drivers
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card card-accent h-100">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-users me-2"></i> Team Resources</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Access and manage team information with these quick links:</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="/teams" class="btn btn-outline-accent">
+                                            <i class="fas fa-list me-2"></i> All Teams
+                                        </a>
+                                        <a href="/teams/create" class="btn btn-outline-accent">
+                                            <i class="fas fa-plus me-2"></i> Add New Team
+                                        </a>
+                                        <a href="/compare_teams" class="btn btn-outline-accent">
+                                            <i class="fas fa-balance-scale me-2"></i> Compare Teams
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-info p-4" role="alert">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading fw-bold">Important Information</h5>
+                        <p class="mb-0">To contribute data to F1StatsHub, you'll need to create an account or sign in. Once logged in, you'll be able to add new drivers and teams, edit existing information, and more.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

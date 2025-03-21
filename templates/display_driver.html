@@ -1,0 +1,277 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <h1 class="display-5 text-danger text-center mb-4">F1 Driver Statistics Search</h1>
+            
+            {% if error %}
+            <div class="alert alert-danger shadow-sm">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0">Find Drivers</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/drivers/query" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="attribute" class="form-label">Driver Attribute:</label>
+                                <select id="attribute" name="attribute" class="form-select" required>
+                                    <option value="">-- Select attribute --</option>
+                                    <option value="name">Driver Name</option>
+                                    <option value="age">Age</option>
+                                    <option value="pole_positions">Pole Positions</option>
+                                    <option value="race_wins">Race Wins</option>
+                                    <option value="points_scored">Points Scored</option>
+                                    <option value="world_titles">World Championships</option>
+                                    <option value="fastest_laps">Fastest Laps</option>
+                                    <option value="drive_team">Team</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="operator" class="form-label">Comparison Operator:</label>
+                                <select id="operator" name="operator" class="form-select" required>
+                                    <option value="">-- Select operator --</option>
+                                    <option value="eq">Equal to (=)</option>
+                                    <option value="gt">Greater than (>)</option>
+                                    <option value="lt">Less than (<)</option>
+                                    <option value="gte">Greater than or equal (≥)</option>
+                                    <option value="lte">Less than or equal (≤)</option>
+                                    <option value="contains">Contains (text search)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="value" class="form-label">Search Value:</label>
+                                <input type="text" id="value" name="value" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-danger me-2">
+                                <i class="bi bi-search me-1"></i> Search Drivers
+                            </button>
+                            <a href="/drivers" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            {% if query_info %}
+            <div class="alert alert-info shadow-sm mb-4">
+                <i class="bi bi-info-circle-fill me-2"></i><strong>Active Filter:</strong> {{ query_info }}
+            </div>
+            {% endif %}
+            
+            {% if drivers %}
+                <h2 class="h4 border-bottom pb-2 mb-3">Matching Drivers ({{ drivers|length }})</h2>
+                <div class="list-group shadow-sm mb-4">
+                    {% for driver in drivers %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ driver.id }}">
+                            <div class="w-100">
+                                <div class="d-flex w-100 justify-content-between mb-2">
+                                    <h5 class="mb-0">
+                                        <a href="/drivers/{{ driver.id }}" class="text-danger text-decoration-none">{{ driver.name }}</a>
+                                    </h5>
+                                    <span class="badge bg-danger rounded-pill">{{ driver.drive_team }}</span>
+                                </div>
+                                <div class="driver-stats small text-secondary">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled mb-0">
+                                                <li><strong>Age:</strong> {{ driver.age }}</li>
+                                                <li><strong>Pole Positions:</strong> {{ driver.pole_positions }}</li>
+                                                <li><strong>Race Wins:</strong> {{ driver.race_wins }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled mb-0">
+                                                <li><strong>Points:</strong> {{ driver.points_scored }}</li>
+                                                <li><strong>Championships:</strong> {{ driver.world_titles }}</li>
+                                                <li><strong>Fastest Laps:</strong> {{ driver.fastest_laps }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if user_logged_in %}
+                                <button class="btn btn-sm btn-outline-danger delete-button ms-2" 
+                                       data-id="{{ driver.id }}" data-name="{{ driver.name }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-secondary text-center">
+                    <i class="bi bi-emoji-neutral me-2"></i>No drivers match your search criteria.
+                </div>
+            {% endif %}
+            
+            <div class="text-center mt-4">
+                <a href="/create/driver" class="btn btn-outline-danger">
+                    <i class="bi bi-person-plus me-2"></i>Add New Driver
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Driver Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 2rem;"></i>
+                </div>
+                <p class="text-center">Are you sure you want to delete <strong><span id="driverName"></span></strong>?</p>
+                <p class="text-center text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Store the driver ID to be deleted
+    let driverToDelete = null;
+    let deleteModal;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap modal
+        deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        
+        // Attach click handlers to delete buttons
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                driverToDelete = this.getAttribute('data-id');
+                const driverName = this.getAttribute('data-name');
+                
+                document.getElementById('driverName').textContent = driverName;
+                deleteModal.show();
+            });
+        });
+        
+        // Handle delete confirmation
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (driverToDelete) {
+                deleteDriver(driverToDelete);
+                deleteModal.hide();
+            }
+        });
+
+        // Handle attribute select change to optimize UI for different attribute types
+        document.getElementById('attribute').addEventListener('change', function() {
+            const valueField = document.getElementById('value');
+            const operatorSelect = document.getElementById('operator');
+            const attribute = this.value;
+            
+            // Reset operator if changing attributes
+            operatorSelect.value = '';
+            
+            // For string attributes, show "contains" option and text input
+            if (attribute === 'name' || attribute === 'drive_team') {
+                // Show contains operator for text fields
+                showContainsOperator(true);
+                valueField.type = 'text';
+                valueField.step = null;
+                valueField.min = null;
+            } 
+            // For numeric attributes
+            else if (attribute === 'age' || attribute === 'pole_positions' || 
+                     attribute === 'race_wins' || attribute === 'world_titles' || 
+                     attribute === 'fastest_laps') {
+                showContainsOperator(false);
+                valueField.type = 'number';
+                valueField.min = '0';
+                valueField.step = '1';
+            }
+            // For points which can be decimal
+            else if (attribute === 'points_scored') {
+                showContainsOperator(false);
+                valueField.type = 'number';
+                valueField.min = '0';
+                valueField.step = '0.5';
+            }
+        });
+        
+        function showContainsOperator(show) {
+            const operatorSelect = document.getElementById('operator');
+            const containsOption = Array.from(operatorSelect.options).find(opt => opt.value === 'contains');
+            
+            if (containsOption) {
+                containsOption.style.display = show ? '' : 'none';
+            } else if (show) {
+                // If option doesn't exist but should be shown, create it
+                const newOption = new Option('Contains (text search)', 'contains');
+                operatorSelect.add(newOption);
+            }
+        }
+    });
+
+    function deleteDriver(driverId) {
+        console.log("Deleting driver with ID:", driverId);
+        
+        fetch(`/drivers/${driverId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                const driverElement = document.querySelector(`div[data-id="${driverId}"]`);
+                if (driverElement) {
+                    driverElement.remove();
+                    
+                    // Show success alert
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+                    alertDiv.innerHTML = `
+                        <i class="bi bi-check-circle-fill me-2"></i>Driver deleted successfully.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    
+                    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.card'));
+                    
+                    // Auto dismiss after 3 seconds
+                    setTimeout(() => {
+                        const bsAlert = new bootstrap.Alert(alertDiv);
+                        bsAlert.close();
+                    }, 3000);
+                    
+                } else {
+                    // If we can't find the element, just reload
+                    window.location.reload();
+                }
+            } else {
+                console.error("Server returned error status:", response.status);
+                alert("Failed to delete driver");
+            }
+        })
+        .catch(error => {
+            console.error("Error occurred during delete:", error);
+            alert("An error occurred while deleting the driver");
+        });
+    }
+</script>
+{% endblock %}

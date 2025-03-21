@@ -1,0 +1,113 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="fw-bold text-center mb-0">
+                        {{ "Edit Driver Profile" if driver else "Add New Driver" }}
+                    </h2>
+                </div>
+                
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show m-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <form method="post" action="{% if driver %}/drivers/edit/{{ driver.id }}{% else %}/create/driver{% endif %}">
+                        <div class="row g-3">
+                            <!-- Driver Information Section -->
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Driver Name</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ driver.name if driver else '' }}" required
+                                       {% if driver %}readonly{% endif %}>
+                                {% if driver %}
+                                <div class="form-text">Name cannot be modified</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="age" class="form-label">Age</label>
+                                <input type="number" class="form-control" id="age" name="age" 
+                                       min="16" max="60" required 
+                                       value="{{ driver.age if driver else '' }}">
+                                <div class="form-text">Must be at least 16 years old</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <hr class="my-2">
+                                <h4 class="text-secondary">Career Statistics</h4>
+                            </div>
+                            
+                            <!-- Career Statistics Section -->
+                            <div class="col-md-4">
+                                <label for="pole_positions" class="form-label">Pole Positions</label>
+                                <input type="number" class="form-control" id="pole_positions" name="pole_positions" 
+                                       min="0" required 
+                                       value="{{ driver.pole_positions if driver else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="race_wins" class="form-label">Race Wins</label>
+                                <input type="number" class="form-control" id="race_wins" name="race_wins" 
+                                       min="0" required 
+                                       value="{{ driver.race_wins if driver else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="points_scored" class="form-label">Points Scored</label>
+                                <input type="number" class="form-control" id="points_scored" name="points_scored" 
+                                       min="0" step="0.5" required 
+                                       value="{{ driver.points_scored if driver else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="world_titles" class="form-label">World Championships</label>
+                                <input type="number" class="form-control" id="world_titles" name="world_titles" 
+                                       min="0" required 
+                                       value="{{ driver.world_titles if driver else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="fastest_laps" class="form-label">Fastest Laps</label>
+                                <input type="number" class="form-control" id="fastest_laps" name="fastest_laps" 
+                                       min="0" required 
+                                       value="{{ driver.fastest_laps if driver else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="drive_team" class="form-label">Team</label>
+                                <select class="form-select" id="drive_team" name="drive_team" required>
+                                    <option value="">-- Select Team --</option>
+                                    {% for team in teams %}
+                                        <option value="{{ team.name }}" {% if driver and driver.drive_team == team.name %}selected{% endif %}>
+                                            {{ team.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-text">Current racing team</div>
+                            </div>
+                            
+                            <!-- Form Actions -->
+                            <div class="col-12 mt-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-danger">
+                                        {{ "Update Driver" if driver else "Create Driver" }}
+                                    </button>
+                                    <a href="/drivers" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
