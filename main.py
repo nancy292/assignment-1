@@ -1,6 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI, Request,Form, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import google.oauth2.id_token
@@ -34,33 +34,64 @@ def retrive_drivers(request:Request):
 
 @app.get("/create/driver",response_class=HTMLResponse)
 def register_drivers(request:Request):
+    query = firestore_db.collection('teams')
+    teams = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
     return templates.TemplateResponse(
             "create-driver.html",
-            {"request": request}
+            {"request": request,
+             "teams":teams,
+             }
         )
 
 
-@app.post("/create/driver",response_class=HTMLResponse)
-def register_drivers(request:Request,name=Form(...),age=Form(...),pole_positions=Form(...),race_wins=Form(...),
-                  points_scored=Form(...),world_titles=Form(...),fastest_laps=Form(...),drive_team=Form(...)):
-    driver_exists = firestore_db.collection('drivers').where(field_path='name', op_string='==', value=name).limit(1).get()
-    if len(driver_exists) > 0:
-        raise Exception("name already taken.Please use another name")
+@app.post("/create/driver", response_class=HTMLResponse)
+def register_drivers(
+    request: Request,
+    name: str = Form(...),
+    age: str = Form(...),
+    pole_positions: str = Form(...),
+    race_wins: str = Form(...),
+    points_scored: str = Form(...),
+    world_titles: str = Form(...),
+    fastest_laps: str = Form(...),
+    drive_team: str = Form(...)
+):
+    # Convert string inputs to integers
+    try:
+        age = int(age)
+        pole_positions = int(pole_positions)
+        race_wins = int(race_wins)
+        points_scored = int(points_scored)
+        world_titles = int(world_titles)
+        fastest_laps = int(fastest_laps)
+    except ValueError:
+        raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+
+    # Validation
     if age < 0:
-        raise Exception("age must be greater than 0 years old")
+        raise Exception("Age must be greater than 0 years old.")
     if pole_positions < 0:
-        raise Exception("pole positions must be greater or equal to  0")
+        raise Exception("Pole positions must be 0 or greater.")
     if race_wins < 0:
-        raise Exception("race wins must be greater or equal to  0")
+        raise Exception("Race wins must be 0 or greater.")
     if points_scored < 0:
-        raise Exception("points scored must be greater or equal to  0")
+        raise Exception("Points scored must be 0 or greater.")
     if world_titles < 0:
-        raise Exception("world titles must be greater or equal to  0")
+        raise Exception("World titles must be 0 or greater.")
     if fastest_laps < 0:
-        raise Exception("fastest laps must be greater or equal to  0")
-    team_exist = firestore_db.collection('teams').where('name','==',drive_team).limit(1).get()
-    if len(team_exist)<=0:
-        raise Exception("create team name before assigning it to a driver")
+        raise Exception("Fastest laps must be 0 or greater.")
+
+    # Check if driver name already exists
+    driver_exists = firestore_db.collection('drivers').where('name', '==', name).limit(1).get()
+    if len(driver_exists) > 0:
+        raise Exception("Name already taken. Please use another name.")
+
+    # Check if the assigned team exists
+    team_exist = firestore_db.collection('teams').where('name', '==', drive_team).limit(1).get()
+    if len(team_exist) == 0:
+        raise Exception("Create the team before assigning it to a driver.")
+
+    # Save driver data
     driver_data = {
         "name": name,
         "age": age,
@@ -72,32 +103,76 @@ def register_drivers(request:Request,name=Form(...),age=Form(...),pole_positions
         "drive_team": drive_team
     }
     firestore_db.collection('drivers').add(driver_data)
-    return None
 
-@app.post("create/teams",response_class=HTMLResponse)
-def register_team(request:Request,name=Form(...),year_founded=Form(...),pole_positions=Form(...),race_wins=Form(...),
-                constructor_titles=Form(...),prev_finish_position=Form(...)):
-    team_exists = firestore_db.collection('teams').where('name', '==', name).limit(1).get() 
-    if len(team_exists) > 0:
-        raise Exception("name already taken.Please use another name")
-    if year_founded < 1799 or year_founded>2025:
-        raise Exception("Year must be greater than 1800 and less than 2025")
+    return RedirectResponse(url="/drivers", status_code=303)
+
+
+
+
+
+
+
+
+
+
+@app.get("/teams",response_class=HTMLResponse)
+def retrive_teams(request:Request):
+    query = firestore_db.collection('teams')
+    teams = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+    return templates.TemplateResponse(
+        "display_teams.html",
+        {"teams":teams,
+         "request": request}
+    )
+
+@app.get("/create/team",response_class=HTMLResponse)
+def register_team(request:Request):
+    return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request}
+        )
+
+@app.post("/create/team", response_class=HTMLResponse)
+def register_team(
+    request: Request,
+    name: str = Form(...),
+    year_founded: str = Form(...),
+    pole_positions: str = Form(...),
+    race_wins: str = Form(...),
+    constructor_titles: str = Form(...),
+    prev_finish_position: str = Form(...)
+):
+    
+    try:
+        year_founded = int(year_founded)
+        pole_positions = int(pole_positions)
+        race_wins = int(race_wins)
+        constructor_titles = int(constructor_titles)
+        prev_finish_position = int(prev_finish_position)
+    except ValueError:
+        raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+
+    
+    if year_founded < 1800 or year_founded > 2025:
+        raise Exception("Year must be between 1800 and 2025.")
     if pole_positions < 0:
-        raise Exception("total pole positions must be greater than zero")
+        raise Exception("Total pole positions must be 0 or greater.")
     if race_wins < 0:
-        raise Exception("Toatl race wins must be greater than zero")
+        raise Exception("Total race wins must be 0 or greater.")
     if constructor_titles < 0:
-        raise Exception("Total constructor title must be greater than zero")
-    if prev_finish_position < 0:
-        raise Exception("previous season position must be greater than zero")
+        raise Exception("Total constructor titles must be 0 or greater.")
+    if prev_finish_position < 1:
+        raise Exception("Previous season position must be at least 1.")
+
     
     team_data = {
-        "name":name,
-        "year_founded":year_founded,
+        "name": name,
+        "year_founded": year_founded,
         "pole_positions": pole_positions,
         "race_wins": race_wins,
-        "constructor_titles":constructor_titles,
-        "prev_finish_position":prev_finish_position
+        "constructor_titles": constructor_titles,
+        "prev_finish_position": prev_finish_position
     }
     firestore_db.collection('teams').add(team_data)
-    return None
+
+    return RedirectResponse(url="/teams", status_code=303)

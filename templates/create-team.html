@@ -1,0 +1,94 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="fw-bold text-center mb-0">
+                        {{ "Edit Team Profile" if team else "Add New Team" }}
+                    </h2>
+                </div>
+                
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show m-3">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <form method="post" action="{% if team %}/teams/edit/{{ team.id }}{% else %}/create/team{% endif %}">
+                        <div class="row g-3">
+                            <!-- Team Information Section -->
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Team Name</label>
+                                <input type="text" class="form-control" id="name" name="name" 
+                                       value="{{ team.name if team else '' }}" required
+                                       {% if team %}readonly{% endif %}>
+                                {% if team %}
+                                <div class="form-text">Name cannot be modified</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="year_founded" class="form-label">Year Founded</label>
+                                <input type="number" class="form-control" id="year_founded" name="year_founded" 
+                                       min="1950" max="{{ current_year }}" required 
+                                       value="{{ team.year_founded if team else '' }}">
+                                <div class="form-text">Year the team was established</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <hr class="my-2">
+                                <h4 class="text-secondary">Team Statistics</h4>
+                            </div>
+                            
+                            <!-- Team Statistics Section -->
+                            <div class="col-md-4">
+                                <label for="pole_positions" class="form-label">Pole Positions</label>
+                                <input type="number" class="form-control" id="pole_positions" name="pole_positions" 
+                                       min="0" required 
+                                       value="{{ team.pole_positions if team else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="race_wins" class="form-label">Race Wins</label>
+                                <input type="number" class="form-control" id="race_wins" name="race_wins" 
+                                       min="0" required 
+                                       value="{{ team.race_wins if team else '' }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="constructor_titles" class="form-label">Constructor Titles</label>
+                                <input type="number" class="form-control" id="constructor_titles" name="constructor_titles" 
+                                       min="0" required 
+                                       value="{{ team.constructor_titles if team else '' }}">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="prev_finish_position" class="form-label">Previous Season Position</label>
+                                <input type="number" class="form-control" id="prev_finish_position" name="prev_finish_position" 
+                                       min="1" max="20" required 
+                                       value="{{ team.prev_finish_position if team else '' }}">
+                                <div class="form-text">Team's finishing position in the previous season</div>
+                            </div>
+                            
+                            <!-- Form Actions -->
+                            <div class="col-12 mt-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-danger">
+                                        {{ "Update Team" if team else "Create Team" }}
+                                    </button>
+                                    <a href="/teams" class="btn btn-secondary">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
