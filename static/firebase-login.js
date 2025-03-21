@@ -2,13 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBMoMIJMqCIJZDgxEDpUShZCS2o1Ew_nxs",
-    authDomain: "assignment---1-1e153.firebaseapp.com",
-    projectId: "assignment---1-1e153",
-    storageBucket: "assignment---1-1e153.appspot.com",
-    messagingSenderId: "133737118405",
-    appId: "1:133737118405:web:244db60467492f4f10ceac"
-};
+    apiKey: "AIzaSyCJP_FO1GKIoRNpsZzU_n0Z61d9PYCzwFU",
+    authDomain: "assignment1-667db.firebaseapp.com",
+    projectId: "assignment1-667db",
+    storageBucket: "assignment1-667db.firebasestorage.app",
+    messagingSenderId: "676535605005",
+    appId: "1:676535605005:web:671c102965e894bac94244",
+  };
 window.addEventListener("load", function() {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
