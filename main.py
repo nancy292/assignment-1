@@ -23,14 +23,34 @@ async def root(request: Request):
     )
 
 @app.get("/drivers",response_class=HTMLResponse)
-def retrive_drivers(request:Request):
-    query = firestore_db.collection('drivers')
-    drivers = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
-    return templates.TemplateResponse(
-        "display_driver.html",
-        {"drivers":drivers,
-         "request": request}
-    )
+def retrive_drivers(request:Request,
+                  attribute: Optional[str] = None, 
+                  operator: Optional[str] = None, 
+                  value: Optional[str] = None):
+    if attribute and operator and value:
+        query = firestore_db.collection('drivers')
+        try:
+            if attribute not in ["name", "drive_team"]:
+                value = int(value)
+        except:
+            raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+        query = query.where(attribute, operator, value)
+        drivers = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+        query_info = f"{attribute} {operator} {value}"
+        return templates.TemplateResponse(
+            "display_drivers.html",
+            {"drivers":drivers,
+             "query_info":query_info,
+            "request": request}
+        )
+    else :
+        query = firestore_db.collection('drivers')
+        drivers = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+        return templates.TemplateResponse(
+            "display_drivers.html",
+            {"drivers":drivers,
+            "request": request}
+        )
 
 @app.get("/create/driver",response_class=HTMLResponse)
 def register_drivers(request:Request):
@@ -106,6 +126,18 @@ def register_drivers(
 
     return RedirectResponse(url="/drivers", status_code=303)
 
+@app.post("/query/drivers",response_class=HTMLResponse)
+def query_drivers(request:Request,
+                attribute=Form(...),
+                operator=Form(...),
+                value=Form(...)):
+    
+    return RedirectResponse(
+        url=f"/drivers?attribute={attribute}&operator={operator}&value={value}",
+        status_code=303
+    )
+
+
 
 
 
@@ -116,14 +148,34 @@ def register_drivers(
 
 
 @app.get("/teams",response_class=HTMLResponse)
-def retrive_teams(request:Request):
-    query = firestore_db.collection('teams')
-    teams = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
-    return templates.TemplateResponse(
-        "display_teams.html",
-        {"teams":teams,
-         "request": request}
-    )
+def retrive_teams(request:Request,
+                  attribute: Optional[str] = None, 
+                  operator: Optional[str] = None, 
+                  value: Optional[str] = None):
+    if attribute and operator and value:
+        query = firestore_db.collection('teams')
+        try:
+            if not attribute == 'name':
+                value = int(value)
+        except:
+            raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+        query = query.where(attribute, operator, value)
+        teams = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+        query_info = f"{attribute} {operator} {value}"
+        return templates.TemplateResponse(
+            "display_teams.html",
+            {"teams":teams,
+             "query_info":query_info,
+            "request": request}
+        )
+    else :
+        query = firestore_db.collection('teams')
+        teams = [{"id": doc.id, **doc.to_dict()} for doc in query.stream()]
+        return templates.TemplateResponse(
+            "display_teams.html",
+            {"teams":teams,
+            "request": request}
+        )
 
 @app.get("/create/team",response_class=HTMLResponse)
 def register_team(request:Request):
@@ -176,3 +228,15 @@ def register_team(
     firestore_db.collection('teams').add(team_data)
 
     return RedirectResponse(url="/teams", status_code=303)
+
+
+@app.post("/query/teams",response_class=HTMLResponse)
+def query_teams(request:Request,
+                attribute=Form(...),
+                operator=Form(...),
+                value=Form(...)):
+    
+    return RedirectResponse(
+        url=f"/teams?attribute={attribute}&operator={operator}&value={value}",
+        status_code=303
+    )

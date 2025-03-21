@@ -17,7 +17,7 @@
                     <h4 class="mb-0">Find Teams</h4>
                 </div>
                 <div class="card-body">
-                    <form action="/teams/query" method="post">
+                    <form action="/query/teams" method="post">
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label for="attribute" class="form-label">Team Attribute:</label>
@@ -36,12 +36,11 @@
                                 <label for="operator" class="form-label">Comparison Operator:</label>
                                 <select id="operator" name="operator" class="form-select" required>
                                     <option value="">-- Select operator --</option>
-                                    <option value="eq">Equal to (=)</option>
-                                    <option value="gt">Greater than (>)</option>
-                                    <option value="lt">Less than (<)</option>
-                                    <option value="gte">Greater than or equal (≥)</option>
-                                    <option value="lte">Less than or equal (≤)</option>
-                                    <option value="contains">Contains (text search)</option>
+                                    <option value="==">Equal to (=)</option>
+                                    <option value=">">Greater than (>)</option>
+                                    <option value="<">Less than (<)</option>
+                                    <option value=">=">Greater than or equal (≥)</option>
+                                    <option value="<=">Less than or equal (≤)</option>
                                 </select>
                             </div>
                             
