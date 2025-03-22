@@ -456,116 +456,122 @@
             }
         }
         
-        // Function to check cookie token and update UI
         function checkAuthStatus() {
-            const token = parseCookieToken(document.cookie);
-            if (token.length > 0) {
-                // User is logged in
-                const emailFromToken = parseJwt(token).email || "User";
-                const emailDisplay = emailFromToken.split('@')[0]; // Show only username part
-                document.getElementById('login-item').innerHTML = `
-                    <a class="nav-link" href="#" onclick="document.getElementById('sign-out').click()">
-                        <i class="fas fa-sign-out-alt me-1"></i> Logout (${emailDisplay})
-                    </a>
-                `;
-                
-                // Enable edit buttons if they exist
-                const editButtons = document.querySelectorAll('.edit-button');
-                editButtons.forEach(button => {
-                    button.classList.remove('disabled');
-                });
-                
-                // Enable delete buttons if they exist
-                const deleteButtons = document.querySelectorAll('.delete-button');
-                deleteButtons.forEach(button => {
-                    button.classList.remove('disabled');
-                });
-                
-                // Enable all add forms if they exist
-                const addForms = document.querySelectorAll('.add-form');
-                addForms.forEach(form => {
-                    form.classList.remove('disabled');
-                    const inputs = form.querySelectorAll('input, select, button');
-                    inputs.forEach(input => {
-                        input.disabled = false;
-                    });
-                });
-            } else {
-                // User is signed out
-                document.getElementById('login-item').innerHTML = `
-                    <a class="nav-link" href="#" onclick="openAuthModal()">
-                        <i class="fas fa-sign-in-alt me-1"></i> Login
-                    </a>
-                `;
-                
-                // Disable edit buttons
-                const editButtons = document.querySelectorAll('.edit-button');
-                editButtons.forEach(button => {
-                    button.classList.add('disabled');
-                });
-                
-                // Disable delete buttons
-                const deleteButtons = document.querySelectorAll('.delete-button');
-                deleteButtons.forEach(button => {
-                    button.classList.add('disabled');
-                });
-                
-                // Disable add forms EXCEPT for driver creation form
-                const addForms = document.querySelectorAll('.add-form');
-                addForms.forEach(form => {
-                    // Check if this is the driver creation form
-                    if (form.closest('form')?.action?.includes()) {
-                        // Keep driver creation form enabled
-                        form.classList.remove('disabled');
-                        const inputs = form.querySelectorAll('input, select, button');
-                        inputs.forEach(input => {
-                            input.disabled = false;
-                        });
-                    }
-                    else if(form.closest('form')?.action?.includes()){
-                        form.classList.remove('disabled');
-                        const inputs = form.querySelectorAll('input, select, button');
-                        inputs.forEach(input => {
-                            input.disabled = false;
-                        });
-                    } else {
-                        // Disable other forms
-                        form.classList.add('disabled');
-                        const inputs = form.querySelectorAll('input, select, button');
-                        inputs.forEach(input => {
-                            input.disabled = true;
-                        });
-                    }
-                });
-            }
-        }
+    const token = parseCookieToken(document.cookie);
+    if (token.length > 0) {
         
-        // Helper function to parse the JWT token
-        function parseJwt(token) {
-            try {
-                return JSON.parse(atob(token.split('.')[1]));
-            } catch (e) {
-                return {};
-            }
-        }
+        const emailFromToken = parseJwt(token).email || "User";
+        const emailDisplay = emailFromToken.split('@')[0]; // Show only username part
+        document.getElementById('login-item').innerHTML = `
+            <a class="nav-link" href="#" onclick="document.getElementById('sign-out').click()">
+                <i class="fas fa-sign-out-alt me-1"></i> Logout (${emailDisplay})
+            </a>
+        `;
         
-        // Parse cookie token
-        function parseCookieToken(cookie) {
-            const strings = cookie.split(';');
-            for (let i = 0; i < strings.length; i++) {
-                const temp = strings[i].split('=');
-                if (temp[0].trim() === "token") { 
-                    return temp[1];
-                }
-            }
-            return "";
-        }
         
-        // Check authentication status on page load and periodically
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthStatus();
-            setInterval(checkAuthStatus, 2000);
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
+            button.classList.remove('disabled');
         });
+        
+       
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.classList.remove('disabled');
+        });
+        
+        
+        const addForms = document.querySelectorAll('.add-form');
+        addForms.forEach(form => {
+            form.classList.remove('disabled');
+            const inputs = form.querySelectorAll('input, select, button');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+        });
+    } else {
+       
+        document.getElementById('login-item').innerHTML = `
+            <a class="nav-link" href="#" onclick="openAuthModal()">
+                <i class="fas fa-sign-in-alt me-1"></i> Login
+            </a>
+        `;
+        
+       
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
+            button.classList.add('disabled');
+        });
+        
+        
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+            button.classList.add('disabled');
+        });
+        
+        
+        const addForms = document.querySelectorAll('.add-form');
+        addForms.forEach(form => {
+            form.classList.add('disabled');
+            const inputs = form.querySelectorAll('input, select, button');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        });
+        
+        
+        const formContainers = document.querySelectorAll('.form-container');
+        formContainers.forEach(container => {
+            
+            if (!container.querySelector('.login-required-message')) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'alert alert-warning mt-3 login-required-message';
+                messageDiv.innerHTML = '<i class="fas fa-lock me-2"></i>Please <a href="#" onclick="openAuthModal()">login</a> to create or edit content.';
+                container.prepend(messageDiv);
+            }
+        });
+    }
+}
+
+
+function parseJwt(token) {
+    try {
+        return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+        return {};
+    }
+}
+
+
+function parseCookieToken(cookie) {
+    const strings = cookie.split(';');
+    for (let i = 0; i < strings.length; i++) {
+        const temp = strings[i].split('=');
+        if (temp[0].trim() === "token") { 
+            return temp[1];
+        }
+    }
+    return "";
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthStatus();
+    setInterval(checkAuthStatus, 2000);
+    
+    // Add event listeners to forms for additional security
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            const token = parseCookieToken(document.cookie);
+            if (token.length === 0) {
+                
+                event.preventDefault();
+                openAuthModal();
+                alert('You must be logged in to perform this action.');
+            }
+        });
+    });
+});
     </script>
 </body>
 </html>

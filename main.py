@@ -52,6 +52,22 @@ def retrive_drivers(request:Request,
             "request": request}
         )
 
+
+@app.get("/drivers/{driver_id}",response_class=HTMLResponse)
+def retrive_driver(request:Request,driver_id:str):
+    driver = firestore_db.collection("drivers").document(driver_id)
+    driver = driver.get()
+    if not driver.exists:
+        return HTMLResponse(content="not a valid driver id",status_code=303)
+    driver_dict = {"id": driver.id, **driver.to_dict()}
+    query = firestore_db.collection("teams")
+    teams = [doc.to_dict() for doc in query.stream()]
+    return templates.TemplateResponse(
+        "create-driver.html",
+        {"request": request, "driver": driver_dict, "teams": teams}
+    )
+    
+
 @app.get("/create/driver",response_class=HTMLResponse)
 def register_drivers(request:Request):
     query = firestore_db.collection('teams')
@@ -177,6 +193,64 @@ def retrive_teams(request:Request,
             "request": request}
         )
 
+
+@app.get("/teams/{team_id}",response_class=HTMLResponse)
+def retrive_driver(request:Request,team_id:str):
+    team = firestore_db.collection("teams").document(team_id)
+    team = team.get()
+    if not team.exists:
+        return HTMLResponse(content="not a valid team id",status_code=303)
+    team_dict = {"id": team.id, **team.to_dict()}
+    return templates.TemplateResponse(
+        "create-team.html",
+        {"request": request, "team": team_dict}
+    )
+
+@app.post("/teams/{team_id}",response_class=HTMLResponse)
+def update_team(request:Request,
+                team_id:str,
+                year_founded: str = Form(...),
+                pole_positions: str = Form(...),
+                race_wins: str = Form(...),
+                constructor_titles: str = Form(...),
+                prev_finish_position: str = Form(...)):
+    try:
+        year_founded = int(year_founded)
+        pole_positions = int(pole_positions)
+        race_wins = int(race_wins)
+        constructor_titles = int(constructor_titles)
+        prev_finish_position = int(prev_finish_position)
+    except ValueError:
+        raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+
+    if year_founded < 1800 or year_founded > 2025:
+        raise Exception("Year must be between 1800 and 2025.")
+    if pole_positions < 0:
+        raise Exception("Total pole positions must be 0 or greater.")
+    if race_wins < 0:
+        raise Exception("Total race wins must be 0 or greater.")
+    if constructor_titles < 0:
+        raise Exception("Total constructor titles must be 0 or greater.")
+    if prev_finish_position < 1:
+        raise Exception("Previous season position must be at least 1.")
+
+    ref = firestore_db.collection("teams").document(team_id)
+    if not ref.get().exists:
+        raise Exception("Team not found")
+    team_data = {
+        
+        "year_founded": year_founded,
+        "pole_positions": pole_positions,
+        "race_wins": race_wins,
+        "constructor_titles": constructor_titles,
+        "prev_finish_position": prev_finish_position
+    }
+    ref = firestore_db.collection("teams").document(team_id)
+    ref.update(team_data)
+
+    return RedirectResponse(url="/teams", status_code=303)
+    
+
 @app.get("/create/team",response_class=HTMLResponse)
 def register_team(request:Request):
     return templates.TemplateResponse(
@@ -240,3 +314,12 @@ def query_teams(request:Request,
         url=f"/teams?attribute={attribute}&operator={operator}&value={value}",
         status_code=303
     )
+
+
+@app.delete("/teams/{team_id}",response_class=HTMLResponse)
+def delete_team(request:Request,team_id:str):
+    ref = firestore_db.collection("teams").document(team_id)
+    if not ref.get().exists:
+        raise Exception("Team not found")
+    ref.delete()
+    return RedirectResponse(url="/teams", status_code=303)

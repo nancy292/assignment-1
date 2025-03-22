@@ -19,7 +19,7 @@
                 {% endif %}
                 
                 <div class="card-body">
-                    <form method="post" action="{% if team %}/teams/edit/{{ team.id }}{% else %}/create/team{% endif %}">
+                    <form method="post" action="{% if team %}/teams/{{ team.id }}{% else %}/create/team{% endif %}">
                         <div class="row g-3">
                             <!-- Team Information Section -->
                             <div class="col-md-6">
