@@ -19,7 +19,7 @@
                 {% endif %}
                 
                 <div class="card-body">
-                    <form method="post" action="{% if driver %}/drivers/edit/{{ driver.id }}{% else %}/create/driver{% endif %}">
+                    <form method="post" action="{% if driver %}/drivers/{{ driver.id }}{% else %}/create/driver{% endif %}">
                         <div class="row g-3">
                             <!-- Driver Information Section -->
                             <div class="col-md-6">

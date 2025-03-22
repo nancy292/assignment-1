@@ -155,6 +155,71 @@ def query_drivers(request:Request,
 
 
 
+@app.post("/drivers/{driver_id}", response_class=HTMLResponse)
+def register_drivers(
+    request: Request,
+    driver_id:str,
+    age: str = Form(...),
+    pole_positions: str = Form(...),
+    race_wins: str = Form(...),
+    points_scored: str = Form(...),
+    world_titles: str = Form(...),
+    fastest_laps: str = Form(...),
+    drive_team: str = Form(...)
+    ):
+    try:
+        age = int(age)
+        pole_positions = int(pole_positions)
+        race_wins = int(race_wins)
+        points_scored = int(points_scored)
+        world_titles = int(world_titles)
+        fastest_laps = int(fastest_laps)
+    except ValueError:
+        raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
+
+    # Validation
+    if age < 0:
+        raise Exception("Age must be greater than 0 years old.")
+    if pole_positions < 0:
+        raise Exception("Pole positions must be 0 or greater.")
+    if race_wins < 0:
+        raise Exception("Race wins must be 0 or greater.")
+    if points_scored < 0:
+        raise Exception("Points scored must be 0 or greater.")
+    if world_titles < 0:
+        raise Exception("World titles must be 0 or greater.")
+    if fastest_laps < 0:
+        raise Exception("Fastest laps must be 0 or greater.")
+
+
+    # Check if the assigned team exists
+    team_exist = firestore_db.collection('teams').where('name', '==', drive_team).limit(1).get()
+    if len(team_exist) == 0:
+        raise Exception("Create the team before assigning it to a driver.")
+
+    # Save driver data
+    driver_data = {
+        "age": age,
+        "pole_positions": pole_positions,
+        "race_wins": race_wins,
+        "points_scored": points_scored,
+        "world_titles": world_titles,
+        "fastest_laps": fastest_laps,
+        "drive_team": drive_team
+    }
+    ref = firestore_db.collection("drivers").document(driver_id)
+    if not ref.get().exists:
+        raise Exception("Team not found")
+    ref.update(driver_data)
+    return RedirectResponse(url="/drivers", status_code=303)
+
+@app.delete("/drivers/{driver_id}",response_class=HTMLResponse)
+def delete_driver(request:Request,driver_id:str):
+    ref = firestore_db.collection("drivers").document(driver_id)
+    if not ref.get().exists:
+        raise Exception("Driver not found")
+    ref.delete()
+    return RedirectResponse(url="/drivers", status_code=303)
 
 
 
