@@ -1,0 +1,75 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Heading with consistent styling -->
+    <h1 class="mb-4 fw-bold" style="color: var(--primary-color);">Team Comparison</h1>
+    
+    <!-- Back to comparison button -->
+    <div class="mb-4">
+        <a href="/compare_teams" class="btn btn-outline-secondary">Back to comparison</a>
+    </div>
+    
+    <!-- Comparison card with enhanced styling -->
+    <div class="card border-0 rounded-4 shadow-sm">
+        <div class="card-body p-4">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Attribute</th>
+                        <th>{{ team1.name }}</th>
+                        <th>{{ team2.name }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Year Founded</td>
+                        <td class="{% if comparison.year_founded == 'team1' %}bg-success text-white{% endif %}">
+                            {{ team1.year_founded }}
+                        </td>
+                        <td class="{% if comparison.year_founded == 'team2' %}bg-success text-white{% endif %}">
+                            {{ team2.year_founded }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Pole Positions</td>
+                        <td class="{% if comparison.pole_positions == 'team1' %}bg-success text-white{% endif %}">
+                            {{ team1.pole_positions }}
+                        </td>
+                        <td class="{% if comparison.pole_positions == 'team2' %}bg-success text-white{% endif %}">
+                            {{ team2.pole_positions }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Race Wins</td>
+                        <td class="{% if comparison.race_wins == 'team1' %}bg-success text-white{% endif %}">
+                            {{ team1.race_wins }}
+                        </td>
+                        <td class="{% if comparison.race_wins == 'team2' %}bg-success text-white{% endif %}">
+                            {{ team2.race_wins }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Constructor Titles</td>
+                        <td class="{% if comparison.constructor_titles == 'team1' %}bg-success text-white{% endif %}">
+                            {{ team1.constructor_titles }}
+                        </td>
+                        <td class="{% if comparison.constructor_titles == 'team2' %}bg-success text-white{% endif %}">
+                            {{ team2.constructor_titles }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Last Season Position</td>
+                        <td class="{% if comparison.prev_finish_position == 'team1' %}bg-success text-white{% endif %}">
+                            {{ team1.prev_finish_position }}
+                        </td>
+                        <td class="{% if comparison.prev_finish_position == 'team2' %}bg-success text-white{% endif %}">
+                            {{ team2.prev_finish_position }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

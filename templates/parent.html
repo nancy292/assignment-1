@@ -1,420 +1,227 @@
+<!-- base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Stats Hub</title>
+    <title>Formula Racing Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #0a1e3d;
-            --secondary-color: #f58020;
-            --accent-color: #00a19c;
-            --light-color: #f5f7fa;
-            --dark-color: #1e2b3c;
+            --primary-color: #1E3F66;
+            --secondary-color: #2E5984;
+            --accent-color: #F39237;
+            --light-color: #F6F8FA;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--light-color);
-            color: var(--dark-color);
-            position: relative;
-            min-height: 100vh;
-            padding-bottom: 80px;
         }
         
-        .navbar {
-            background: linear-gradient(135deg, var(--primary-color), #1a3a6a);
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
         }
         
-        .navbar-brand {
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff !important;
-            font-size: 24px;
+        .bg-racing {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         }
         
-        .navbar-brand span {
-            color: var(--secondary-color);
+        .text-racing {
+            color: var(--primary-color);
         }
         
-        .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 10px;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 4px !important;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            color: var(--secondary-color) !important;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        
-        .dropdown-menu {
-            background-color: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            margin-top: 15px;
-        }
-        
-        .dropdown-item {
-            color: rgba(255, 255, 255, 0.85);
-            padding: 8px 15px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--secondary-color);
-        }
-        
-        .btn-accent {
+        .btn-racing {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
-            color: #fff;
-            font-weight: 600;
-            border-radius: 6px;
-            padding: 8px 16px;
-            transition: all 0.3s ease;
+            color: white;
         }
         
-        .btn-accent:hover {
-            background-color: #008f8b;
-            border-color: #008f8b;
-            color: #fff;
+        .btn-racing:hover {
+            background-color: #e07e25;
+            border-color: #e07e25;
+            color: white;
         }
         
-        .btn-secondary-custom {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: #fff;
-            font-weight: 600;
-            border-radius: 6px;
-            padding: 8px 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-secondary-custom:hover {
-            background-color: #e07010;
-            border-color: #e07010;
-            color: #fff;
-        }
-        
-        .btn-outline-accent {
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            background-color: transparent;
-            font-weight: 600;
-            border-radius: 6px;
-            padding: 8px 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-outline-accent:hover {
-            background-color: var(--accent-color);
-            color: #fff;
-        }
-        
-        /* Cards */
-        .card {
+        .comparison-card {
+            transition: all 0.3s;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: none;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
+        .comparison-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         
-        .card-header {
-            padding: 15px 20px;
-            font-weight: 600;
-            border-bottom: none;
-        }
-        
-        .card-primary .card-header {
-            background: linear-gradient(135deg, var(--primary-color), #1a3a6a);
-            color: #fff;
-        }
-        
-        .card-secondary .card-header {
-            background: linear-gradient(135deg, var(--secondary-color), #ff9a42);
-            color: #fff;
-        }
-        
-        .card-accent .card-header {
-            background: linear-gradient(135deg, var(--accent-color), #00c3be);
-            color: #fff;
-        }
-        
-        .card-body {
-            padding: 20px;
-        }
-        
-        /* Footer */
         footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background-color: var(--primary-color);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 20px 0;
-            font-size: 14px;
+            margin-top: 50px;
+            padding: 30px 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
         }
         
-        footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        
-        footer a:hover {
-            color: var(--accent-color);
-        }
-        
-        /* Auth Modal */
-        .auth-modal {
+        /* Login modal styles */
+        .login-modal {
+            background-color: rgba(0, 0, 0, 0.6);
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
             display: none;
+            z-index: 1050;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            backdrop-filter: blur(5px);
         }
         
-        .auth-container {
+        .login-container {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 35px;
             width: 420px;
             max-width: 90%;
-            background-color: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: modalFadeIn 0.4s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
         
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .login-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
         
-        .auth-header {
-            background: linear-gradient(135deg, var(--primary-color), #1a3a6a);
-            color: #fff;
-            padding: 20px;
-            position: relative;
-        }
-        
-        .auth-header h4 {
-            margin: 0;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        .auth-close {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 22px;
+        .login-close {
+            font-size: 28px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            color: #999;
+            transition: all 0.2s;
         }
         
-        .auth-close:hover {
-            color: #fff;
-            transform: scale(1.1);
+        .login-close:hover {
+            color: #333;
+            transform: rotate(90deg);
         }
         
-        .auth-body {
-            padding: 30px;
+        .login-body {
+            margin-bottom: 25px;
         }
         
-        .auth-form-group {
+        .login-form-group {
             margin-bottom: 20px;
-        }
-        
-        .auth-form-group label {
-            font-weight: 500;
-            margin-bottom: 8px;
-            display: block;
-            color: var(--dark-color);
-        }
-        
-        .auth-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.2s ease;
-        }
-        
-        .auth-input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(0, 161, 156, 0.2);
-            outline: none;
-        }
-        
-        .auth-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
         
         .login-btn {
             background-color: var(--accent-color);
-            color: #fff;
-            margin-bottom: 10px;
+            border-color: var(--accent-color);
+            transition: all 0.3s;
+            font-weight: 500;
         }
         
         .login-btn:hover {
-            background-color: #008f8b;
+            background-color: #e07e25;
+            border-color: #e07e25;
+            transform: translateY(-2px);
         }
         
-        .signup-btn {
-            background-color: #fff;
-            color: var(--dark-color);
-            border: 1px solid #ddd;
+        .nav-item .nav-link {
+            font-weight: 500;
+            transition: all 0.2s;
         }
         
-        .signup-btn:hover {
-            background-color: #f5f5f5;
-            border-color: #ccc;
+        .nav-item .nav-link:hover {
+            transform: translateY(-2px);
         }
         
-        /* Feature cards */
-        .feature-card {
-            text-align: center;
-            padding: 40px 25px;
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
         }
         
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            background-color: rgba(10, 30, 61, 0.1);
-            color: var(--primary-color);
-            font-size: 30px;
-            transition: all 0.3s ease;
+        .dropdown-item {
+            transition: all 0.2s;
+            padding: 10px 20px;
         }
         
-        .card:hover .feature-icon {
-            background-color: var(--primary-color);
-            color: #fff;
-            transform: scale(1.1);
-        }
-        
-        .disabled {
-            opacity: 0.6;
-            pointer-events: none;
+        .dropdown-item:hover {
+            background-color: rgba(243, 146, 55, 0.1);
+            color: var(--accent-color);
+            transform: translateX(5px);
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-racing">
         <div class="container">
-            <a class="navbar-brand" href="/">F1<span>StatsHub</span></a>
+            <a class="navbar-brand" href="/">
+                <span>Formula Racing Hub</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">Home</a>
-                    </li>
+                <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="driversDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-alt me-1"></i> Drivers
+                            Drivers
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/drivers"><i class="fas fa-list me-2"></i> All Drivers</a></li>
-                            <li><a class="dropdown-item" href="/create/driver"><i class="fas fa-plus me-2"></i> Add Driver</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/compare_drivers"><i class="fas fa-balance-scale me-2"></i> Compare Drivers</a></li>
+                            <li><a class="dropdown-item" href="/drivers">View All Drivers</a></li>
+                            <li><a class="dropdown-item" href="/create/driver">Add Driver</a></li>
+                            <li><a class="dropdown-item" href="/compare_drivers">Compare Drivers</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="teamsDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-users me-1"></i> Teams
+                            Teams
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/teams"><i class="fas fa-list me-2"></i> All Teams</a></li>
-                            <li><a class="dropdown-item" href="/teams/create"><i class="fas fa-plus me-2"></i> Add Team</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/compare_teams"><i class="fas fa-balance-scale me-2"></i> Compare Teams</a></li>
+                            <li><a class="dropdown-item" href="/teams">View All Teams</a></li>
+                            <li><a class="dropdown-item" href="/create/team">Add Team</a></li>
+                            <li><a class="dropdown-item" href="/compare_teams">Compare Teams</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-chart-line me-1"></i> Statistics</a>
-                    </li>
                 </ul>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item" id="login-item">
-                        <a class="nav-link" href="#" onclick="openAuthModal()"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                        <a class="nav-link" href="#" onclick="openLoginModal()">Login</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Auth Modal -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container" id="login-box">
-            <div class="auth-header">
-                <h4><i class="fas fa-user-circle me-2"></i> Account Access</h4>
-                <span class="auth-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></span>
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-container" id="login-box">
+            <div class="login-header">
+                <h4>Welcome Back</h4>
+                <span class="login-close" onclick="closeLoginModal()">&times;</span>
             </div>
-            <div class="auth-body">
-                <div class="auth-form-group">
-                    <label for="email"><i class="fas fa-envelope me-2"></i>Email Address</label>
-                    <input type="email" class="auth-input" id="email" placeholder="Enter your email">
+            <div class="login-body">
+                <div class="login-form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
                 </div>
-                <div class="auth-form-group">
-                    <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
-                    <input type="password" class="auth-input" id="password" placeholder="Enter your password">
+                <div class="login-form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
                 </div>
-                <button type="button" class="auth-btn login-btn" id="login">
-                    <i class="fas fa-sign-in-alt me-2"></i> Login to Account
-                </button>
-                <button type="button" class="auth-btn signup-btn" id="sign-up">
-                    <i class="fas fa-user-plus me-2"></i> Create New Account
-                </button>
+            </div>
+            <div class="login-footer">
+                <button type="button" class="btn btn-primary login-btn w-100 mb-3" id="login">Sign In</button>
+                <button type="button" class="btn btn-outline-secondary w-100" id="sign-up">Create Account</button>
             </div>
         </div>
         <button id="sign-out" class="btn btn-danger" hidden>Sign out</button>
     </div>
 
-    <div id="content" class="mb-5">
+    <div id="content" class="container py-4">
         {% block content %}{% endblock %}
     </div>
 
@@ -422,10 +229,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <p>&copy; 2025 F1StatsHub | Assignment-1</p>
+                    <p>&copy; Assignment-1 - Formula Racing Hub</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <p>Powered by <a href="#">F1 API</a></p>
+                    <p></p>
                 </div>
             </div>
         </div>
@@ -439,139 +246,130 @@
     
     <!-- Custom Scripts -->
     <script>
-        // Auth Modal Functions
-        function openAuthModal() {
-            document.getElementById('authModal').style.display = 'flex';
+        // Login Modal Functions
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
         }
         
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
         }
         
         // Close modal when clicking outside of it
         window.onclick = function(event) {
-            const modal = document.getElementById('authModal');
+            const modal = document.getElementById('loginModal');
             if (event.target === modal) {
-                closeAuthModal();
+                closeLoginModal();
             }
         }
         
+        // Create a function to check cookie token and update the UI accordingly
         function checkAuthStatus() {
-    const token = parseCookieToken(document.cookie);
-    if (token.length > 0) {
-        
-        const emailFromToken = parseJwt(token).email || "User";
-        const emailDisplay = emailFromToken.split('@')[0]; 
-        document.getElementById('login-item').innerHTML = `
-            <a class="nav-link" href="#" onclick="document.getElementById('sign-out').click()">
-                <i class="fas fa-sign-out-alt me-1"></i> Logout (${emailDisplay})
-            </a>
-        `;
-        
-        
-        const editButtons = document.querySelectorAll('.edit-button');
-        editButtons.forEach(button => {
-            button.classList.remove('disabled');
-        });
-        
-       
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        deleteButtons.forEach(button => {
-            button.classList.remove('disabled');
-        });
-        
-        
-        const addForms = document.querySelectorAll('.add-form');
-        addForms.forEach(form => {
-            form.classList.remove('disabled');
-            const inputs = form.querySelectorAll('input, select, button');
-            inputs.forEach(input => {
-                input.disabled = false;
-            });
-        });
-    } else {
-       
-        document.getElementById('login-item').innerHTML = `
-            <a class="nav-link" href="#" onclick="openAuthModal()">
-                <i class="fas fa-sign-in-alt me-1"></i> Login
-            </a>
-        `;
-        
-       
-        const editButtons = document.querySelectorAll('.edit-button');
-        editButtons.forEach(button => {
-            button.classList.add('disabled');
-        });
-        
-        
-        const deleteButtons = document.querySelectorAll('.delete-button');
-        deleteButtons.forEach(button => {
-            button.classList.add('disabled');
-        });
-        
-        
-        const addForms = document.querySelectorAll('.add-form');
-        addForms.forEach(form => {
-            form.classList.add('disabled');
-            const inputs = form.querySelectorAll('input, select, button');
-            inputs.forEach(input => {
-                input.disabled = true;
-            });
-        });
-        
-        
-        const formContainers = document.querySelectorAll('.form-container');
-        formContainers.forEach(container => {
-            
-            if (!container.querySelector('.login-required-message')) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'alert alert-warning mt-3 login-required-message';
-                messageDiv.innerHTML = '<i class="fas fa-lock me-2"></i>Please <a href="#" onclick="openAuthModal()">login</a> to create or edit content.';
-                container.prepend(messageDiv);
-            }
-        });
-    }
-}
-
-
-function parseJwt(token) {
-    try {
-        return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-        return {};
-    }
-}
-
-
-function parseCookieToken(cookie) {
-    const strings = cookie.split(';');
-    for (let i = 0; i < strings.length; i++) {
-        const temp = strings[i].split('=');
-        if (temp[0].trim() === "token") { 
-            return temp[1];
-        }
-    }
-    return "";
-}
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuthStatus();
-    setInterval(checkAuthStatus, 2000);
-    
-    // Add event listeners to forms for additional security
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(event) {
             const token = parseCookieToken(document.cookie);
-            if (token.length === 0) {
+            if (token.length > 0) {
+                // User is logged in
+                const emailFromToken = parseJwt(token).email || "User";
+                document.getElementById('login-item').innerHTML = `
+                    <a class="nav-link" href="#" onclick="document.getElementById('sign-out').click()">Logout (${emailFromToken})</a>
+                `;
                 
-                event.preventDefault();
-                openAuthModal();
-                alert('You must be logged in to perform this action.');
+                // Enable edit buttons if they exist
+                const editButtons = document.querySelectorAll('.edit-button');
+                editButtons.forEach(button => {
+                    button.classList.remove('disabled');
+                });
+                
+                // Enable delete buttons if they exist
+                const deleteButtons = document.querySelectorAll('.delete-button');
+                deleteButtons.forEach(button => {
+                    button.classList.remove('disabled');
+                });
+                
+                // Enable all add forms if they exist
+                const addForms = document.querySelectorAll('.add-form');
+                addForms.forEach(form => {
+                    form.classList.remove('disabled');
+                    const inputs = form.querySelectorAll('input, select, button');
+                    inputs.forEach(input => {
+                        input.disabled = false;
+                    });
+                });
+            } else {
+                // User is signed out
+                document.getElementById('login-item').innerHTML = `
+                    <a class="nav-link" href="#" onclick="openLoginModal()">Login</a>
+                `;
+                
+                // Disable edit buttons
+                const editButtons = document.querySelectorAll('.edit-button');
+                editButtons.forEach(button => {
+                    button.classList.add('disabled');
+                });
+                
+                // Disable delete buttons
+                const deleteButtons = document.querySelectorAll('.delete-button');
+                deleteButtons.forEach(button => {
+                    button.classList.add('disabled');
+                });
+                
+                // Disable add forms EXCEPT for driver creation form
+                const addForms = document.querySelectorAll('.add-form');
+                addForms.forEach(form => {
+                    // Check if this is the driver creation form
+                    if (form.closest('form')?.action?.includes()) {
+                        // Keep driver creation form enabled
+                        form.classList.remove('disabled');
+                        const inputs = form.querySelectorAll('input, select, button');
+                        inputs.forEach(input => {
+                            input.disabled = false;
+                        });
+                    }
+                    else if(form.closest('form')?.action?.includes()){
+                        form.classList.remove('disabled');
+                        const inputs = form.querySelectorAll('input, select, button');
+                        inputs.forEach(input => {
+                            input.disabled = false;
+                        });
+                    } else {
+                        // Disable other forms
+                        form.classList.add('disabled');
+                        const inputs = form.querySelectorAll('input, select, button');
+                        inputs.forEach(input => {
+                            input.disabled = true;
+                        });
+                    }
+                });
             }
+        }
+        
+        // Helper function to parse the JWT token
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return {};
+            }
+        }
+        
+        // Copy the parseCookieToken function from your firebase-login.js
+        function parseCookieToken(cookie) {
+            const strings = cookie.split(';');
+            for (let i = 0; i < strings.length; i++) {
+                const temp = strings[i].split('=');
+                if (temp[0].trim() === "token") { 
+                    return temp[1];
+                }
+            }
+            return "";
+        }
+        
+        // Check authentication on page load and when changes occur
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            
+            // Watch for cookie changes
+            setInterval(checkAuthStatus, 2000);
         });
-    });
-});
     </script>
 </body>
 </html>

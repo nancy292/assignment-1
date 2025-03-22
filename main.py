@@ -109,7 +109,6 @@ def register_drivers(
 ):
     if not is_user_logged_in(request):
         return RedirectResponse(url="/", status_code=303)
-    # Convert string inputs to integers
     try:
         age = int(age)
         pole_positions = int(pole_positions)
@@ -121,30 +120,50 @@ def register_drivers(
         raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
 
     # Validation
+    existing_driver = firestore_db.collection('drivers').where(field_path='name', op_string='==', value=name).limit(1).get()
+    if len(existing_driver) > 0:
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"driver name already exists please use different one"}
+        )
     if age < 0:
-        raise Exception("Age must be greater than 0 years old.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
     if pole_positions < 0:
-        raise Exception("Pole positions must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
     if race_wins < 0:
-        raise Exception("Race wins must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
     if points_scored < 0:
-        raise Exception("Points scored must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
     if world_titles < 0:
-        raise Exception("World titles must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
     if fastest_laps < 0:
-        raise Exception("Fastest laps must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-driver.html",
+            {"request": request,"error":"should be greater than 0"}
+        )
 
-    # Check if driver name already exists
-    driver_exists = firestore_db.collection('drivers').where('name', '==', name).limit(1).get()
-    if len(driver_exists) > 0:
-        raise Exception("Name already taken. Please use another name.")
 
-    # Check if the assigned team exists
+   
     team_exist = firestore_db.collection('teams').where('name', '==', drive_team).limit(1).get()
     if len(team_exist) == 0:
         raise Exception("Create the team before assigning it to a driver.")
 
-    # Save driver data
+    
     driver_data = {
         "name": name,
         "age": age,
@@ -242,8 +261,9 @@ def delete_driver(request:Request,driver_id:str):
     ref.delete()
     return RedirectResponse(url="/drivers", status_code=303)
 
-@app.get("/compare_drivers")
-async def compare_drivers_page(request: Request):
+@app.get("/compare_drivers",response_class=HTMLResponse)
+def compare_drivers_page(request: Request):
+    print("hello")
     try:
        
         drivers_ref = firestore_db.collection('drivers')
@@ -252,22 +272,23 @@ async def compare_drivers_page(request: Request):
             team_data = doc.to_dict()
             team_data['id'] = doc.id
             drivers.append(team_data)
-        
-       
-        return templates.TemplateResponse("compare_drivers.html", {
-            "request": request,
+        print(team_data)
+        return templates.TemplateResponse(
+            "compare_drivers.html", {
+            "request": request,  # Add this line
             "drivers": drivers
         })
     except Exception as e:
-        
+        print("here")
+        print("Error:", str(e))
         return HTMLResponse(content="something went wrong", status_code=404)
     
-@app.post("/compare_drivers")
+@app.post("/compare_drivers",response_class=HTMLResponse)
 async def compare_drivers(request: Request, driver1: str = Form(...), driver2: str = Form(...)):
     try:
         
         driver1_doc = firestore_db.collection('drivers').document(driver1).get()
-        driver2_doc = firestore_db.collection('teams').document(driver2).get()
+        driver2_doc = firestore_db.collection('drivers').document(driver2).get()
         
         
         if not driver1_doc.exists or not driver2_doc.exists:
@@ -286,12 +307,13 @@ async def compare_drivers(request: Request, driver1: str = Form(...), driver2: s
         
        
         comparison = {}
-        comparison['year_founded'] = 'driver1' if driver1_data['year_founded'] < driver2_data['year_founded'] else 'driver2'
+        comparison['age'] = 'driver1' if driver1_data['age']<driver2_data['age'] else 'driver2'
         comparison['pole_positions'] = 'driver1' if driver1_data['pole_positions'] > driver2_data['pole_positions'] else 'driver2'
         comparison['race_wins'] = 'driver1' if driver1_data['race_wins'] > driver2_data['race_wins'] else 'driver2'
-        comparison['constructor_titles'] = 'driver1' if driver1_data['constructor_titles'] > driver2_data['constructor_titles'] else 'driver2'
-        comparison['prev_finish_position'] = 'driver1' if driver1_data['prev_finish_position'] < driver2_data['prev_finish_position'] else 'driver2'
-
+        comparison['points_scored'] = 'driver1' if driver1_data['points_scored'] > driver2_data['points_scored'] else 'driver2'
+        comparison['world_titles'] = 'driver1' if driver1_data['world_titles'] > driver2_data['world_titles'] else 'driver2'
+        comparison['fastest_laps'] = 'driver1' if driver1_data['fastest_laps'] > driver2_data['fastest_laps'] else 'driver2'
+        
         
         result = {
             'driver1': driver1_data,
@@ -300,14 +322,14 @@ async def compare_drivers(request: Request, driver1: str = Form(...), driver2: s
         }
         
        
-        return templates.TemplateResponse("compare_teams_result.html", {
+        return templates.TemplateResponse("compare_drivers_result.html", {
             "request": request,
             "driver1": result['driver1'],
-            "team2": result['team2'],
+            "driver2": result['driver2'],
             "comparison": result['comparison']
         })
     except Exception as e:
-        
+        print(str(e))
         return HTMLResponse(content=str(e), status_code=404)
 
 
@@ -385,15 +407,30 @@ def update_team(request:Request,
         raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
 
     if year_founded < 1800 or year_founded > 2025:
-        raise Exception("Year must be between 1800 and 2025.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"year has to be in between 1800 to 2025"}
+        )
     if pole_positions < 0:
-        raise Exception("Total pole positions must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if race_wins < 0:
-        raise Exception("Total race wins must be 0 or greater.")
+       return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if constructor_titles < 0:
-        raise Exception("Total constructor titles must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if prev_finish_position < 1:
-        raise Exception("Previous season position must be at least 1.")
+       return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
 
     ref = firestore_db.collection("teams").document(team_id)
     if not ref.get().exists:
@@ -430,6 +467,7 @@ def register_team(
     prev_finish_position: str = Form(...)
 ):
     if not is_user_logged_in(request):
+        print("not logged in ")
         return RedirectResponse(url="/", status_code=303)
     
     try:
@@ -441,17 +479,37 @@ def register_team(
     except ValueError:
         raise Exception("Invalid input: Please enter valid numbers for numeric fields.")
 
-    
+    existing_team = firestore_db.collection('teams').where('name', '==',name).limit(1).get() 
+    if len(existing_team) > 0:
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"Team name already exists.Please use different name"}
+        )
     if year_founded < 1800 or year_founded > 2025:
-        raise Exception("Year must be between 1800 and 2025.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"year has to be in between 1800 to 2025"}
+        )
     if pole_positions < 0:
-        raise Exception("Total pole positions must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if race_wins < 0:
-        raise Exception("Total race wins must be 0 or greater.")
+       return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if constructor_titles < 0:
-        raise Exception("Total constructor titles must be 0 or greater.")
+        return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
     if prev_finish_position < 1:
-        raise Exception("Previous season position must be at least 1.")
+       return templates.TemplateResponse(
+            "create-team.html",
+            {"request": request,"error":"should be greater than 1"}
+        )
 
     
     team_data = {
@@ -491,7 +549,7 @@ def delete_team(request:Request,team_id:str):
     return RedirectResponse(url="/teams", status_code=303)
 
 
-@app.get("/compare_teams")
+@app.get("/compare_teams",response_class=HTMLResponse)
 async def compare_teams_page(request: Request):
     try:
        
@@ -511,7 +569,7 @@ async def compare_teams_page(request: Request):
         
         return HTMLResponse(content="something went wrong", status_code=404)
     
-@app.post("/compare_teams")
+@app.post("/compare_teams",response_class=HTMLResponse)
 async def compare_teams(request: Request, team1: str = Form(...), team2: str = Form(...)):
     try:
         
@@ -549,12 +607,12 @@ async def compare_teams(request: Request, team1: str = Form(...), team2: str = F
         }
         
        
-        return templates.TemplateResponse("compare_teams_result.html", {
+        return templates.TemplateResponse("comprare_teams_result.html", {
             "request": request,
             "team1": result['team1'],
             "team2": result['team2'],
             "comparison": result['comparison']
         })
     except Exception as e:
-        
+        print(str(e))
         return HTMLResponse(content=str(e), status_code=404)

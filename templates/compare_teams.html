@@ -1,0 +1,95 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Heading with consistent styling -->
+    <h1 class="mb-4 fw-bold" style="color: var(--primary-color);">Compare Teams</h1>
+    
+    <!-- Descriptive text for user guidance -->
+    <p class="text-muted mb-4">Select two different teams to compare their statistics.</p>
+
+    <!-- Form with enhanced structure and styling -->
+    <form method="post" id="compare-teams-form" class="needs-validation" novalidate>
+        <div class="row g-4 align-items-center">
+            <!-- First Team Selection -->
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="team1" class="form-label">First Team:</label>
+                    <select class="form-select" id="team1" name="team1" aria-label="Select first team" required>
+                        <option value="">Select a team</option>
+                        {% for team in teams %}
+                        <option value="{{ team.id }}">{{ team.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">Please select a team.</div>
+                </div>
+            </div>
+
+            <!-- VS Label -->
+            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                <h3 class="text-racing fw-bold">VS</h3>
+            </div>
+
+            <!-- Second Team Selection -->
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="team2" class="form-label">Second Team:</label>
+                    <select class="form-select" id="team2" name="team2" aria-label="Select second team" required>
+                        <option value="">Select a team</option>
+                        {% for team in teams %}
+                        <option value="{{ team.id }}">{{ team.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">Please select a different team.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-racing py-2 px-4">Compare</button>
+        </div>
+    </form>
+
+    <!-- JavaScript for dropdown functionality and form validation -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var team1 = document.getElementById('team1');
+        var team2 = document.getElementById('team2');
+        var form = document.getElementById('compare-teams-form');
+
+        // Function to update dropdown options
+        function updateOtherDropdown(thisDropdown, otherDropdown) {
+            var selectedValue = thisDropdown.value;
+            for (var i = 0; i < otherDropdown.options.length; i++) {
+                var option = otherDropdown.options[i];
+                option.disabled = (selectedValue !== "" && option.value === selectedValue);
+            }
+            if (otherDropdown.value === selectedValue && selectedValue !== "") {
+                otherDropdown.value = "";
+            }
+        }
+
+        // Event listeners for dropdown changes
+        team1.addEventListener('change', function() {
+            updateOtherDropdown(team1, team2);
+        });
+        team2.addEventListener('change', function() {
+            updateOtherDropdown(team2, team1);
+        });
+
+        // Form submission validation
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity() || team1.value === team2.value) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (team1.value === team2.value && team1.value !== "") {
+                    alert("Please select two different teams.");
+                }
+            }
+            form.classList.add('was-validated');
+        });
+    });
+    </script>
+</div>
+{% endblock %}

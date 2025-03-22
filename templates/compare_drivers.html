@@ -1,0 +1,95 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-4">
+    
+    <h1 class="mb-4 fw-bold" style="color: var(--primary-color);">Compare Drivers</h1>
+    
+    
+    <p class="text-muted mb-4">Select two different drivers to compare their statistics.</p>
+
+   
+    <form method="post" id="compare-drivers-form" class="needs-validation" novalidate>
+        <div class="row g-4 align-items-center">
+            
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="driver1" class="form-label">First Driver:</label>
+                    <select class="form-select" id="driver1" name="driver1" aria-label="Select first driver" required>
+                        <option value="">Select a driver</option>
+                        {% for driver in drivers %}
+                        <option value="{{ driver.id }}">{{ driver.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">Please select a driver.</div>
+                </div>
+            </div>
+
+           
+            <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                <h3 class="text-racing fw-bold">VS</h3>
+            </div>
+
+           
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="driver2" class="form-label">Second Driver:</label>
+                    <select class="form-select" id="driver2" name="driver2" aria-label="Select second driver" required>
+                        <option value="">Select a driver</option>
+                        {% for driver in drivers %}
+                        <option value="{{ driver.id }}">{{ driver.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">Please select a different driver.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-racing py-2 px-4">Compare</button>
+        </div>
+    </form>
+
+   
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var driver1 = document.getElementById('driver1');
+        var driver2 = document.getElementById('driver2');
+        var form = document.getElementById('compare-drivers-form');
+
+       
+        function updateOtherDropdown(thisDropdown, otherDropdown) {
+            var selectedValue = thisDropdown.value;
+            for (var i = 0; i < otherDropdown.options.length; i++) {
+                var option = otherDropdown.options[i];
+                option.disabled = (selectedValue !== "" && option.value === selectedValue);
+            }
+            if (otherDropdown.value === selectedValue && selectedValue !== "") {
+                otherDropdown.value = "";
+            }
+        }
+
+        
+        driver1.addEventListener('change', function() {
+            updateOtherDropdown(driver1, driver2);
+        });
+        driver2.addEventListener('change', function() {
+            updateOtherDropdown(driver2, driver1);
+        });
+
+       
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity() || driver1.value === driver2.value) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (driver1.value === driver2.value && driver1.value !== "") {
+                    alert("Please select two different drivers.");
+                }
+            }
+            form.classList.add('was-validated');
+        });
+    });
+    </script>
+</div>
+{% endblock %}

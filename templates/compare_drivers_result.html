@@ -1,0 +1,89 @@
+{% extends "parent.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Heading with consistent styling -->
+    <h1 class="mb-4 fw-bold" style="color: var(--primary-color);">Driver Comparison</h1>
+    
+    <!-- Back to comparison button -->
+    <div class="mb-4">
+        <a href="/compare_drivers" class="btn btn-outline-secondary">Back to comparison</a>
+    </div>
+    
+    <!-- Comparison card with enhanced styling -->
+    <div class="card border-0 rounded-4 shadow-sm">
+        <div class="card-body p-4">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Attribute</th>
+                        <th>{{ driver1.name }}</th>
+                        <th>{{ driver2.name }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Age</td>
+                        <td class="{% if comparison.age == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.age }}
+                        </td>
+                        <td class="{% if comparison.age == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.age }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Pole Positions</td>
+                        <td class="{% if comparison.pole_positions == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.pole_positions }}
+                        </td>
+                        <td class="{% if comparison.pole_positions == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.pole_positions }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Race Wins</td>
+                        <td class="{% if comparison.race_wins == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.race_wins }}
+                        </td>
+                        <td class="{% if comparison.race_wins == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.race_wins }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Points Scored</td>
+                        <td class="{% if comparison.points_scored == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.points_scored }}
+                        </td>
+                        <td class="{% if comparison.points_scored == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.points_scored }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total World Titles</td>
+                        <td class="{% if comparison.world_titles == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.world_titles }}
+                        </td>
+                        <td class="{% if comparison.world_titles == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.world_titles }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total Fastest Laps</td>
+                        <td class="{% if comparison.fastest_laps == 'driver1' %}bg-success text-white{% endif %}">
+                            {{ driver1.fastest_laps }}
+                        </td>
+                        <td class="{% if comparison.fastest_laps == 'driver2' %}bg-success text-white{% endif %}">
+                            {{ driver2.fastest_laps }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Team</td>
+                        <td>{{ driver1.drive_team }}</td>
+                        <td>{{ driver2.drive_team }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,144 +1,114 @@
+<!-- index.html -->
 {% extends "parent.html" %}
 {% block content %}
 <div class="container py-5">
-   
-    <div class="row mb-5">
-        <div class="col-lg-8 mx-auto text-center">
-            <h1 class="display-4 fw-bold mb-3">Welcome to F1<span style="color: var(--secondary-color);">StatsHub</span></h1>
-            <p class="lead mb-4">The ultimate resource for Formula 1 statistics, driver profiles, and team comparisons.</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="/drivers" class="btn btn-secondary-custom px-4 py-2">
-                    <i class="fas fa-user-alt me-2"></i> Explore Drivers
-                </a>
-                <a href="/teams" class="btn btn-outline-accent px-4 py-2">
-                    <i class="fas fa-users me-2"></i> Explore Teams
-                </a>
-            </div>
-        </div>
+    <div class="jumbotron bg-light p-5 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f6f8fa, #e9ecef);">
+        <h1 class="display-4 fw-bold">Formula Racing Hub</h1>
+        <p class="lead">Your comprehensive resource for racing driver statistics, team performance data, and season analytics.</p>
+        <hr class="my-4 opacity-50">
+        <p>Browse, compare, and analyze the world's top motorsport talents and organizations.</p>
     </div>
     
-    
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold">Explore Our Features</h2>
-            <p class="text-muted">Everything you need to analyze Formula 1 data</p>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
+    <div class="row mt-5 g-4">
+        <div class="col-md-6">
+            <div class="card comparison-card h-100 border-0">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3" style="color: var(--primary-color);">Driver Database</h3>
+                    <p class="card-text text-muted mb-4">Access comprehensive driver statistics, career histories, and performance analytics.</p>
+                    <div class="mt-auto d-flex flex-wrap gap-2">
+                        <a href="/drivers" class="btn btn-racing">View All Drivers</a>
+                        <a href="/drivers" class="btn btn-outline-secondary">Query Drivers</a>
+                        <a href="/compare_drivers" class="btn btn-outline-secondary">Compare Drivers</a>
                     </div>
-                    <h4 class="mt-4 mb-3">Comprehensive Database</h4>
-                    <p class="text-muted">Access detailed information about drivers, teams, seasons, and races.</p>
-                    <a href="/drivers" class="btn btn-sm btn-outline-accent mt-3">
-                        Browse Data <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
                 </div>
             </div>
         </div>
         
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
+        <div class="col-md-6">
+            <div class="card comparison-card h-100 border-0">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-3" style="color: var(--primary-color);">Team Database</h3>
+                    <p class="card-text text-muted mb-4">Explore team histories, technical specifications, championship standings, and more.</p>
+                    <div class="mt-auto d-flex flex-wrap gap-2">
+                        <a href="/teams" class="btn btn-racing">View All Teams</a>
+                        <a href="/teams" class="btn btn-outline-secondary">Query Teams</a>
+                        <a href="/compare_teams" class="btn btn-outline-secondary">Compare Teams</a>
                     </div>
-                    <h4 class="mt-4 mb-3">Statistical Analysis</h4>
-                    <p class="text-muted">Compare performances and analyze trends with our interactive tools.</p>
-                    <a href="/compare_drivers" class="btn btn-sm btn-outline-accent mt-3">
-                        Compare Stats <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-edit"></i>
-                    </div>
-                    <h4 class="mt-4 mb-3">Contribute Data</h4>
-                    <p class="text-muted">Sign in to add new information or update existing records.</p>
-                    <button onclick="openAuthModal()" class="btn btn-sm btn-outline-accent mt-3">
-                        Sign In <i class="fas fa-sign-in-alt ms-1"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
     
-    
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i> Quick Access</h4>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card rounded-4 border-0 shadow-sm overflow-hidden">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                    <h4 class="mb-0 fw-bold">Platform Features</h4>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-4 mb-md-0">
-                            <div class="card card-secondary h-100">
-                                <div class="card-header">
-                                    <h5 class="mb-0"><i class="fas fa-user-alt me-2"></i> Driver Resources</h5>
+                <div class="card-body p-4">
+                    <p>Welcome to the Formula Racing Hub! Our platform offers comprehensive tools to explore racing data:</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3 p-2 rounded-circle" style="background-color: rgba(243, 146, 55, 0.2);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--accent-color)" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
                                 </div>
-                                <div class="card-body">
-                                    <p>Access and manage driver information with these quick links:</p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/drivers" class="btn btn-outline-accent">
-                                            <i class="fas fa-list me-2"></i> All Drivers
-                                        </a>
-                                        <a href="/drivers/create" class="btn btn-outline-accent">
-                                            <i class="fas fa-plus me-2"></i> Add New Driver
-                                        </a>
-                                        <a href="/compare_drivers" class="btn btn-outline-accent">
-                                            <i class="fas fa-balance-scale me-2"></i> Compare Drivers
-                                        </a>
-                                    </div>
+                                <div>
+                                    <h5 class="mb-1">Comprehensive Data</h5>
+                                    <p class="text-muted mb-0">Access detailed information about drivers and teams</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="me-3 p-2 rounded-circle" style="background-color: rgba(243, 146, 55, 0.2);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--accent-color)" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Content Management</h5>
+                                    <p class="text-muted mb-0">Add and edit information when logged in</p>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
-                            <div class="card card-accent h-100">
-                                <div class="card-header">
-                                    <h5 class="mb-0"><i class="fas fa-users me-2"></i> Team Resources</h5>
+                            <div class="d-flex mb-3">
+                                <div class="me-3 p-2 rounded-circle" style="background-color: rgba(243, 146, 55, 0.2);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--accent-color)" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
                                 </div>
-                                <div class="card-body">
-                                    <p>Access and manage team information with these quick links:</p>
-                                    <div class="d-grid gap-2">
-                                        <a href="/teams" class="btn btn-outline-accent">
-                                            <i class="fas fa-list me-2"></i> All Teams
-                                        </a>
-                                        <a href="/teams/create" class="btn btn-outline-accent">
-                                            <i class="fas fa-plus me-2"></i> Add New Team
-                                        </a>
-                                        <a href="/compare_teams" class="btn btn-outline-accent">
-                                            <i class="fas fa-balance-scale me-2"></i> Compare Teams
-                                        </a>
-                                    </div>
+                                <div>
+                                    <h5 class="mb-1">Statistical Comparison</h5>
+                                    <p class="text-muted mb-0">Compare performance between drivers or teams</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mb-3">
+                                <div class="me-3 p-2 rounded-circle" style="background-color: rgba(243, 146, 55, 0.2);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--accent-color)" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Advanced Search</h5>
+                                    <p class="text-muted mb-0">Query the database based on various criteria</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-   
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="alert alert-info p-4" role="alert">
-                <div class="d-flex">
-                    <div class="me-3">
-                        <i class="fas fa-info-circle fa-2x"></i>
-                    </div>
-                    <div>
-                        <h5 class="alert-heading fw-bold">Important Information</h5>
-                        <p class="mb-0">To contribute data to F1StatsHub, you'll need to create an account or sign in. Once logged in, you'll be able to add new drivers and teams, edit existing information, and more.</p>
+                    
+                    <div class="alert alert-info mt-4 d-flex align-items-center" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="me-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                            You must be logged in to make changes to the database. Creating an account gives you full editing capabilities.
+                        </div>
                     </div>
                 </div>
             </div>
